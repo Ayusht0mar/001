@@ -1,12 +1,22 @@
+"use client"
+import { signOut, useSession } from "@/lib/auth-client";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const users = await prisma.user.findUnique(
-    {
-      where: { email: 'justayushtomar@gmail.com' }
+export default  function Home() {
+
+  const session = useSession();
+
+  const handleSignout = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      alert(`Sign out failed: ${error}`);
     }
-  );
+    redirect("/bitch");
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -24,13 +34,21 @@ export default async function Home() {
             Users List
           </h1>
 
-          {users?.name ? (
-            <p className="max-w-sm text-base leading-7 text-zinc-600 dark:text-zinc-400">
-              Welcome back, {users.name}!
-            </p>
+          
+          {session.data?.user ? (
+            <div className="flex flex-col gap-4">
+              <p className="text-lg text-neutral-700 dark:text-neutral-300">
+                Welcome, {session.data.user.name || session.data.user.email}!
+              </p>
+              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                <h2 className="font-medium mb-2">Your Details:</h2>
+                <p><strong>Email:</strong> {session.data.user.email}</p>
+                <p><strong>Name:</strong> {session.data.user.name || "N/A"}</p>
+              </div>
+            </div>
           ) : (
-            <p className="max-w-sm text-base leading-7 text-zinc-600 dark:text-zinc-400">
-              No user found.
+            <p className="text-base text-neutral-700 dark:text-neutral-300">
+              Please sign in to view your user details.
             </p>
           )}
         </div>
@@ -59,6 +77,10 @@ export default async function Home() {
             Documentation
           </a>
         </div>
+
+        <button onClick={handleSignout}>
+          Sign Out
+        </button>
       </main>
     </div>
   );

@@ -7,61 +7,71 @@ datasource db {
   provider = "postgresql"
 }
 
-model Account {
-  id           String    @id
-  userId       String
-  accountId    String
-  providerId   String
-  accessToken  String?
-  refreshToken String?
-  idToken      String?
-  expiresAt    DateTime?
-  password     String?
-  User         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([providerId, accountId])
+model User {
+  id            String    @id @default(cuid())
+  name          String?  @db.VarChar(255)
+  email         String   @unique @db.VarChar(255)
+  emailVerified Boolean  @default(false) @map("email_verified")
+  image         String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  accounts      Account[]
+  sessions      Session[]
+  
+  @@index([email])
+  @@index([createdAt])
+  @@map("user")
 }
 
 model Session {
-  id        String   @id
-  userId    String
-  expiresAt DateTime
-  ipAddress String?
-  userAgent String?
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  expiresAt DateTime @map("expires_at")
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id")
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("session")
 }
 
-model Subscription {
-  id               String    @id
-  userId           String
-  customerId       String
-  subscriptionId   String    @unique
-  status           String
-  planId           String?
-  currentPeriodEnd DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime
-  User             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-  id            String         @id
-  email         String         @unique
-  emailVerified Boolean        @default(false)
-  name          String?
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime
-  Account       Account[]
-  Session       Session[]
-  Subscription  Subscription[]
+model Account {
+  id                String  @id @default(cuid())
+  accountId         String  @map("account_id")
+  providerId        String  @map("provider_id")
+  userId            String  @map("user_id")
+  accessToken       String? @map("access_token") @db.Text
+  refreshToken      String? @map("refresh_token") @db.Text
+  idToken           String? @map("id_token") @db.Text
+  accessTokenExpiresAt DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope             String?
+  password          String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
 }
 
 model Verification {
-  id         String   @id
+  id         String   @id @default(cuid())
   identifier String
   value      String
-  expiresAt  DateTime
-
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
   @@unique([identifier, value])
+  @@index([expiresAt])
+  @@map("verification")
 }
