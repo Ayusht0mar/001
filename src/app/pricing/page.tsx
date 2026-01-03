@@ -1,7 +1,14 @@
 "use client"
+import { useSession } from "@/lib/auth-client";
 import { products } from "@/lib/product";
 
 export default function PricingPage() {
+
+    const session = useSession()
+
+
+    const userName = session.data?.user.name
+    const userEmail = session.data?.user.email
 
     const initiateCheckout = async (productId: string) => {
         try {
@@ -12,7 +19,7 @@ export default function PricingPage() {
                 },
                 body: JSON.stringify({
                      product_cart : [{ product_id: productId, quantity: 1 }],
-                     customer : {name : "Test User", email: "testuser@example.com"}
+                     customer : {name : userName, email: userEmail}
                     }), 
                     });
 

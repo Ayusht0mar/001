@@ -1,6 +1,5 @@
 "use client"
 import { signOut, useSession } from "@/lib/auth-client";
-import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -15,7 +14,7 @@ export default  function Home() {
       console.error("Sign out error:", error);
       alert(`Sign out failed: ${error}`);
     }
-    redirect("/bitch");
+    redirect("/");
   }
 
   return (
