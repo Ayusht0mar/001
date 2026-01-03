@@ -15,7 +15,9 @@ model User {
   image         String?
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
+  plan          Plan     @default(FREE)
   
+  subscriptions Subscription[]
   accounts      Account[]
   sessions      Session[]
   
@@ -74,4 +76,28 @@ model Verification {
   @@unique([identifier, value])
   @@index([expiresAt])
   @@map("verification")
+}
+
+model Subscription {
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
+  dodoSubscriptionId String   @map("subscription_id") @db.VarChar(255) @unique
+  productId          String   @map("product_id") @db.VarChar(255)
+  status             String   @map("status") @db.VarChar(50)
+  startedAt          DateTime @map("started_at")
+  nextBillingDate    DateTime? @map("next_billing_date")
+  cancelledAt        DateTime? @map("cancelled_at")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscription")
+}
+
+enum Plan {
+  FREE
+  PRO
+  PROPLUS
 }
