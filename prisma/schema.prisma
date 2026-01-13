@@ -15,11 +15,11 @@ model User {
   image         String?
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
-  plan          Plan     @default(FREE)
   
   subscriptions Subscription[]
   accounts      Account[]
   sessions      Session[]
+  payments      Payment[]
   
   @@index([email])
   @@index([createdAt])
@@ -81,23 +81,79 @@ model Verification {
 model Subscription {
   id                 String   @id @default(cuid())
   userId             String   @map("user_id")
-  dodoSubscriptionId String   @map("subscription_id") @db.VarChar(255) @unique
-  productId          String   @map("product_id") @db.VarChar(255)
-  status             String   @map("status") @db.VarChar(50)
-  startedAt          DateTime @map("started_at")
-  nextBillingDate    DateTime? @map("next_billing_date")
-  cancelledAt        DateTime? @map("cancelled_at")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  provider           String   @default("dodo") @map("provider")
+  providerSubscriptionId String @map("provider_subscription_id") @unique
+
+  plan               Plan    @default(FREE) @map("plan")
+  status             SubscriptionStatus @map("status")
+
+  startedAt         DateTime @map("started_at")
+  currentPeriodEnd  DateTime @map("current_period_end")
+  cancelledAt       DateTime? @map("cancelled_at")
+  trialEndsAt       DateTime? @map("trial_ends_at")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  payments          Payment[]
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
+  @@index([userId, status])
   @@map("subscription")
+}
+
+
+model Payment {
+  id              String            @id @default(cuid())
+
+  userId          String            @map("user_id")
+  subscriptionId  String            @map("subscription_id")
+
+  provider        String            @default("dodo") @map("provider")
+  providerPaymentMethod String       @map("provider_payment_method")
+  providerInvoiceId  String         @map("provider_invoice_id")
+
+  amount          Int               @map("amount_cents")
+  refundedAmount  Int               @map("refunded_amount_cents") @default(0)
+  currency        String            @db.VarChar(3)
+
+
+  status          PaymentStatus     @map("status")
+  failureReason   String?           @map("failure_reason") @db.VarChar(255)
+  
+  paidAt          DateTime?         @map("paid_at")
+
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([subscriptionId, status])
+  @@map("payment")
 }
 
 enum Plan {
   FREE
   PRO
   PROPLUS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+  TRIALING
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
 }
