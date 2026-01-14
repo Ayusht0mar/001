@@ -24,17 +24,23 @@ export async function handlePaymentEvent(payload: any) {
         id: providerPaymentId,
         providerInvoiceId: data.invoice_id,
         providerPaymentMethod: data.payment_method,
-        amount: data.amount,
-        refundedAmount: data.refunded_amount ?? 0,
+        amount: data.total_amount,
+        refundedAmount: 0,
         currency: data.currency,
         status: mapPaymentStatus(data.status),
-        paidAt: data.paid_at ? new Date(data.paid_at) : null,
+        paidAt: data.status === "succeeded" ? new Date(data.created_at) : null,
       },
       update: {
         status: mapPaymentStatus(data.status),
-        refundedAmount: data.refunded_amount ?? undefined,
-        paidAt: data.paid_at ? new Date(data.paid_at) : undefined,
-        failureReason: data.failure_reason ?? undefined,
+        ...(data.refunds && data.refunds.length > 0 && {
+          refundedAmount: data.refunds.reduce((sum: number, refund: any) => sum + refund.amount, 0),
+        }),
+        ...(data.status === "succeeded" && {
+          paidAt: new Date(data.created_at),
+        }),
+        ...(data.error_message && {
+          failureReason: data.error_message,
+        }),
       },
     });
 

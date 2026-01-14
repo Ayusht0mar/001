@@ -29,18 +29,18 @@ export async function handleSubscriptionEvent(payload: any) {
       providerSubscriptionId,
       plan: mapPlan(data.product_id),
       status: mapSubscriptionStatus(data.status),
-      startedAt: new Date(data.started_at),
-      currentPeriodEnd: new Date(data.current_period_end),
-      trialEndsAt: data.trial_ends_at
-        ? new Date(data.trial_ends_at)
+      startedAt: new Date(data.created_at),
+      currentPeriodEnd: new Date(data.next_billing_date),
+      trialEndsAt: data.trial_period_days > 0
+        ? new Date(new Date(data.created_at).getTime() + data.trial_period_days * 24 * 60 * 60 * 1000)
         : null,
     },
     update: {
       status: mapSubscriptionStatus(data.status),
-      currentPeriodEnd: new Date(data.current_period_end),
-      cancelledAt: data.cancelled_at
-        ? new Date(data.cancelled_at)
-        : undefined,
+      currentPeriodEnd: new Date(data.next_billing_date),
+      ...(data.cancelled_at && {
+        cancelledAt: new Date(data.cancelled_at),
+      }),
     },
   });
 
