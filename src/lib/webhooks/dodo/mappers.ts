@@ -1,12 +1,17 @@
+import { products } from "@/lib/product";
+
+// Map product names to plan codes
+const planNameMap: Record<string, string> = {
+  "Pro Plan": "PRO",
+  "Pro Plus Plan": "PROPLUS",
+};
+
 export function mapPlan(productId: string) {
-  switch (productId) {
-    case "pro":
-      return "PRO";
-    case "pro_plus":
-      return "PROPLUS";
-    default:
-      return "FREE";
+  const product = products.find((p) => p.product_id === productId);
+  if (product && planNameMap[product.name]) {
+    return planNameMap[product.name];
   }
+  return "FREE";
 }
 
 export function mapSubscriptionStatus(status: string) {
