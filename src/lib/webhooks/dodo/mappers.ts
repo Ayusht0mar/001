@@ -1,12 +1,16 @@
 import { products } from "@/lib/product";
 
-// Map product names to plan codes
-const planNameMap: Record<string, string> = {
+// Prisma Plan enum type
+export type Plan = "FREE" | "PRO" | "PROPLUS";
+
+
+// Map product names to plan codes (Plan type)
+const planNameMap: Record<string, Plan> = {
   "Pro Plan": "PRO",
   "Pro Plus Plan": "PROPLUS",
 };
 
-export function mapPlan(productId: string) {
+export function mapPlan(productId: string): Plan {
   const product = products.find((p) => p.product_id === productId);
   if (product && planNameMap[product.name]) {
     return planNameMap[product.name];
