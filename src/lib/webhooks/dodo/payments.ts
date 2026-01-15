@@ -27,7 +27,7 @@ export async function handlePaymentEvent(payload: any) {
             subscriptionId: subscription.id,
             provider: "dodo",
             id: providerPaymentId,
-            providerInvoiceId: data.invoice_id,
+            providerInvoiceId: data.invoice_id ?? "",
             providerPaymentMethod: data.payment_method,
             amount: data.total_amount,
             refundedAmount: 0,
