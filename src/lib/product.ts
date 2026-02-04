@@ -29,7 +29,6 @@ export const products: Product[] = [
             "Feature B",
             "Feature C",
             "Feature D",
-            "Feature E",
         ],
     },
 ];

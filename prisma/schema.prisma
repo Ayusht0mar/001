@@ -144,11 +144,11 @@ enum Plan {
 
 enum SubscriptionStatus {
   ACTIVE
-  PAST_DUE
   CANCELED
-  INCOMPLETE
-  TRIALING
   EXPIRED
+  FAILED
+  ON_HOLD
+  INCOMPLETE
 }
 
 enum PaymentStatus {

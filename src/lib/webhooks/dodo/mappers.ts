@@ -22,14 +22,14 @@ export function mapSubscriptionStatus(status: string) {
   switch (status) {
     case "active":
       return "ACTIVE";
-    case "trialing":
-      return "TRIALING";
-    case "past_due":
-      return "PAST_DUE";
     case "canceled":
       return "CANCELED";
     case "expired":
       return "EXPIRED";
+    case "failed":
+      return "FAILED";
+    case "on_hold":
+      return "ON_HOLD";
     default:
       return "INCOMPLETE";
   }

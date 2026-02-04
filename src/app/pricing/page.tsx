@@ -1,5 +1,4 @@
 "use client"
-import { Navbar } from "@/components/landingpage";
 import { useSession } from "@/lib/auth-client";
 import { products } from "@/lib/product";
 
@@ -52,8 +51,6 @@ export default function PricingPage() {
 
     return (
         <div>
-            <Navbar />
-
             <div className="text-center mt-16 mb-8">
                 <h1 className="text-3xl md:text-5xl font-semibold tracking-wide leading-tight">
                     Affordable Plans for Every Need
