@@ -29,7 +29,7 @@ export default async function DashboardPage() {
         {user && <p>Hello {user.email}</p>}
         <p className="text-sm text-neutral-600">This page is only accessible to authenticated users.</p>
         <p className="text-sm text-neutral-600">You can customize this page by editing the file at (authenticated)/dashboard/page.tsx</p>
-        <div className="mt-2 text-neutral-200">Go to <a href="/pricing"> Pricing</a>, <a href="/account"> Account</a> or <SignOutButton /></div>
+        <div className="mt-2 text-neutral-200">Go to <a href="/pricing" className="hover:underline underline-offset-2"> Pricing</a>, <a href="/account" className="hover:underline underline-offset-2"> Account</a> or <SignOutButton /></div>
         
       </div>
     </div>

@@ -8,7 +8,7 @@ const SignOutButton = () => {
     };
 
     return (
-        <button onClick={handleSignOut}>
+        <button onClick={handleSignOut} className="hover:underline underline-offset-2">
             Sign Out
         </button>
     );

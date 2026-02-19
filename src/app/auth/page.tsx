@@ -47,23 +47,8 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
-      <div className="hidden md:flex md:flex-col ">
-        <div className="p-8 flex flex-col h-full">
-            <div className="flex flex-col justify-center items-center mt-auto">
-              <div className="flex items-center gap-2 ">
-                <div className="border-3 rounded border-blue-700 size-6 "></div>
-                <p className="font-medium text-lg leading-none text-neutral-400">BuiltStack</p>
-              </div>
-              <div className="mt-4 text-center">
-                <h3>Join BuiltStack - Simplify Your Workflow</h3>
-                <p className="text-neutral-500">Streamline your workflow and enhance team collaboration effortlessly.</p>
-              </div>
-            </div>
-            <div className="aspect-video border max-w-sm border-neutral-900 rounded-lg m-auto mt-8 w-full bg-linear-to-r from-blue-800 to-indigo-900"></div>
-        </div>
-      </div>
-      <div className="border m-2 rounded-lg border-neutral-900 bg-neutral-950/70 flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen flex justify-center items-center">
+      <div className="border m-2 rounded-lg border-neutral-900 bg-neutral-950/70 flex flex-col items-center justify-center p-8 h-full w-full max-w-2xl mx-auto">
           <div className="my-4 text-center">
               <h3 className="text-lg font-semibold">{isSignUp ? "Sign up Account" : "Sign in to Account"}</h3>
               <p className="text-neutral-500">{isSignUp ? "Enter your personal data to create your account" : "Enter your credentials to sign in"}</p>
